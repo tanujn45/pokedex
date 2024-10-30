@@ -5,12 +5,24 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
+
+	"github.com/tanujn45/pokedex/internal/pokeapi"
 )
 
-func main() {
-	scanner := bufio.NewScanner(os.Stdin)
-	commands := GetCommands()
+type config struct {
+	pokeapiClient    pokeapi.Client
+	nextLocationsURL *string
+	prevLocationsURL *string
+}
 
+func main() {
+	pokeClient := pokeapi.NewClient(5 & time.Second)
+	cfg := &config{
+		pokeapiClient: pokeClient,
+	}
+
+	scanner := bufio.NewScanner(os.Stdin)
 	for {
 		fmt.Print("Pokedex > ")
 		var input string
@@ -18,12 +30,16 @@ func main() {
 			input = scanner.Text()
 		}
 		inputSlice := cleanInput(input)
-		command, ok := commands[inputSlice[0]]
+		command, ok := GetCommands()[inputSlice[0]]
 		if !ok {
 			commandInvalid()
 			continue
 		}
-		command.callback()
+		err := command.callback(cfg)
+		if err != nil {
+			fmt.Println(err)
+            fmt.Println()
+		}
 	}
 }
 
