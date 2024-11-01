@@ -17,7 +17,7 @@ type config struct {
 }
 
 func main() {
-	pokeClient := pokeapi.NewClient(5 & time.Second)
+	pokeClient := pokeapi.NewClient(5*time.Second, 5*time.Minute)
 	cfg := &config{
 		pokeapiClient: pokeClient,
 	}
@@ -30,15 +30,24 @@ func main() {
 			input = scanner.Text()
 		}
 		inputSlice := cleanInput(input)
+
+		if len(inputSlice) == 0 {
+			continue
+		}
+		args := []string{}
+		if len(inputSlice) > 1 {
+			args = inputSlice[1:]
+		}
+
 		command, ok := GetCommands()[inputSlice[0]]
 		if !ok {
 			commandInvalid()
 			continue
 		}
-		err := command.callback(cfg)
+		err := command.callback(cfg, args...)
 		if err != nil {
 			fmt.Println(err)
-            fmt.Println()
+			fmt.Println()
 		}
 	}
 }
