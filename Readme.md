@@ -29,7 +29,7 @@ cd pokedex
 2. **Run the application**:
 
 ```bash
-./pokedex
+go build && ./pokedex
 ```
 
 # Contributing
