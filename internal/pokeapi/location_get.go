@@ -9,12 +9,12 @@ import (
 func (c *Client) GetLocation(loc string) (Location, error) {
 	url := baseURL + "/location-area/" + loc
 
-    val, ok := c.cache.Get(url)
-    if ok {
-        location := Location{}
-        err := json.Unmarshal(val, &location)
-        return location, err
-    }
+	val, ok := c.cache.Get(url)
+	if ok {
+		location := Location{}
+		err := json.Unmarshal(val, &location)
+		return location, err
+	}
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -37,7 +37,7 @@ func (c *Client) GetLocation(loc string) (Location, error) {
 	if err != nil {
 		return Location{}, nil
 	}
-    
-    c.cache.Add(url, data)
+
+	c.cache.Add(url, data)
 	return location, nil
 }
